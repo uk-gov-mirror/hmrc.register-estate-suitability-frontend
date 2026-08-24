@@ -32,12 +32,12 @@
 @(answerSections: Seq[Section])(implicit request: Request[_], messages: Messages)
 
 @main_template(
- title = messages("checkYourAnswers.title"),
+ title = messages("haveUtrYesNo.title"),
  showBackLink = true
 ) {
   @formHelper(action = CheckYourAnswersController.onSubmit, Symbol("autoComplete") -> "off") {
 
-  @heading("checkYourAnswers.heading")
+  @heading("haveUtrYesNo.title")
 
   @govukSummaryList(SummaryList(rows = formatSections(answerSections)))
 

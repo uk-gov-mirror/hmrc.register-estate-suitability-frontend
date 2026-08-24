@@ -95,8 +95,6 @@ youNeedToRegister.p3 = If you need help with this service,
 youNeedToRegister.contact.link = contact the deceased estate helpline (opens in new tab)
 
 
-haveUtrYesNo.title = Does the estate have a Unique Taxpayer Reference (UTR)?
+haveUtrYesNo.title = Check your answers
 haveUtrYesNo.heading = Does the estate have a Unique Taxpayer Reference (UTR)?
 haveUtrYesNo.checkYourAnswersLabel = Does the estate have a Unique Taxpayer Reference (UTR)?
-
-
