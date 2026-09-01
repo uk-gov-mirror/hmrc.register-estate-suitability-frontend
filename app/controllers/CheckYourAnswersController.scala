@@ -24,13 +24,13 @@ import pages._
 import play.api.Logging
 import play.api.http.HeaderNames
 import play.api.i18n.{I18nSupport, MessagesApi}
-import play.api.mvc.{Action, AnyContent, MessagesControllerComponents}
+import play.api.mvc.{Action, AnyContent, MessagesControllerComponents, Result}
 import repositories.SessionRepository
 import uk.gov.hmrc.play.bootstrap.frontend.controller.FrontendBaseController
 import utils.CheckYourAnswersHelper
 import views.html.CheckYourAnswersView
 
-import scala.concurrent.ExecutionContext
+import scala.concurrent.{ExecutionContext, Future}
 
 class CheckYourAnswersController @Inject() (
   override val messagesApi: MessagesApi,
@@ -47,15 +47,24 @@ class CheckYourAnswersController @Inject() (
   def onPageLoad(): Action[AnyContent] = actions.authWithData.async { implicit request =>
     val hcWithCookie = hc.copy(extraHeaders = hc.headers(Seq(HeaderNames.COOKIE)))
 
-    registerEstateConnector.getUTRFlag()(request, hcWithCookie, ec).map { utrFlag =>
-      val pages = Seq(
-        EstateRegisteredOnlineYesNoPage.toString -> Some(utrFlag),
-        DateOfDeathBeforePage.toString           -> None,
-        MoreThanHalfMillPage.toString            -> None,
-        MoreThanQuarterMillPage.toString         -> None,
-        MoreThanTenThousandPage.toString         -> None,
-        MoreThanTwoHalfMillPage.toString         -> None
-      )
+    for {
+      utrFlag        <- registerEstateConnector.getUTRFlag()(request, hcWithCookie, ec)
+      updatedAnswers <- Future.fromTry(request.userAnswers.set(EstateRegisteredOnlineYesNoPage, utrFlag))
+      _              <- sessionRepository.set(updatedAnswers)
+    } yield {
+      val pages: Seq[(String, Option[Boolean])] =
+        if (utrFlag) {
+          Seq(EstateRegisteredOnlineYesNoPage.toString -> Some(utrFlag))
+        } else {
+          Seq(
+            EstateRegisteredOnlineYesNoPage.toString -> Some(utrFlag),
+            DateOfDeathBeforePage.toString           -> None,
+            MoreThanHalfMillPage.toString            -> None,
+            MoreThanQuarterMillPage.toString         -> None,
+            MoreThanTenThousandPage.toString         -> None,
+            MoreThanTwoHalfMillPage.toString         -> None
+          )
+        }
 
       val sections =
         pages.flatMap { case (pageName, answerOverride) =>
@@ -67,10 +76,13 @@ class CheckYourAnswersController @Inject() (
         }
 
       Ok(checkYourAnswersView(sections))
+
     }
   }
 
   def onSubmit(): Action[AnyContent] = actions.authWithData.async { implicit request =>
+    val isAlreadyRegistered = request.userAnswers.get(EstateRegisteredOnlineYesNoPage).contains(true)
+
     val answers = Seq(
       request.userAnswers.get(MoreThanQuarterMillPage),
       request.userAnswers.get(MoreThanHalfMillPage),
@@ -80,14 +92,16 @@ class CheckYourAnswersController @Inject() (
 
     val needsToRegister = answers.flatten.contains(true)
 
-    val nextPage =
-      if (needsToRegister) {
-        controllers.routes.YouNeedToRegisterController.onPageLoad()
+    val result: Result =
+      if (isAlreadyRegistered) {
+        Redirect(s"${appConfig.loginContinueUrl}/must-register-estate")
+      } else if (needsToRegister) {
+        Redirect(controllers.routes.YouNeedToRegisterController.onPageLoad())
       } else {
-        controllers.routes.DoNotNeedToRegisterController.onPageLoad()
+        Redirect(controllers.routes.DoNotNeedToRegisterController.onPageLoad())
       }
 
-    sessionRepository.set(request.userAnswers).map(_ => Redirect(nextPage))
+    Future.successful(result)
   }
 
 }
