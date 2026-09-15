@@ -46,7 +46,8 @@ class LogoutControllerSpec extends SpecBase {
         val result = route(application, request).value
 
         status(result) mustEqual SEE_OTHER
-        val continueUrl = URLEncoder.encode(s"${frontendAppConfig.feedbackFrontendUrl}", "UTF-8")
+        val continueUrl =
+          URLEncoder.encode("http://localhost:9514/feedback/estates?useServiceNavigation", "UTF-8")
 
         val expectedUrl = s"${frontendAppConfig.logout}?continue=$continueUrl"
 
@@ -76,7 +77,8 @@ class LogoutControllerSpec extends SpecBase {
 
         status(result) mustEqual SEE_OTHER
 
-        val continueUrl = URLEncoder.encode(s"${frontendAppConfig.feedbackFrontendUrl}", "UTF-8")
+        val continueUrl =
+          URLEncoder.encode("http://localhost:9514/feedback/estates?useServiceNavigation", "UTF-8")
 
         val expectedUrl = s"${frontendAppConfig.logout}?continue=$continueUrl"
         redirectLocation(result).value mustBe expectedUrl

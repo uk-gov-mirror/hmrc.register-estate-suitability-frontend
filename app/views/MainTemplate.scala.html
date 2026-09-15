@@ -17,23 +17,16 @@
 @import config.FrontendAppConfig
 @import uk.gov.hmrc.hmrcfrontend.views.viewmodels.hmrcstandardpage._
 @import uk.gov.hmrc.hmrcfrontend.views.html.helpers.HmrcStandardPage
-@import resources._
 
 @this(
     appConfig: FrontendAppConfig,
     hmrcTimeoutDialogHelper: HmrcTimeoutDialogHelper,
-    stylesheets: Stylesheets,
     hmrcStandardPage: HmrcStandardPage,
     govukBackLink: GovukBackLink,
     hmrcReportTechnicalIssueHelper: HmrcReportTechnicalIssueHelper
 )
 
 @(title: String,
-    sidebarLinks: Option[Html] = None,
-    contentHeader: Option[Html] = None,
-    bodyClasses: Option[String] = None,
-    mainClass: Option[String] = None,
-    scriptElem: Option[Html] = None,
     timeoutEnabled: Boolean = true,
     canSignOut: Boolean = true,
     showBackLink: Boolean = false
@@ -51,14 +44,12 @@
             keepAliveButtonText = Some(messages("timeout.keep-alive-button"))
         )
     }
-
-    @stylesheets()
 }
 
 @beforeContentBlock = {
     @if(showBackLink) {
         @govukBackLink(BackLink(
-            attributes = Map("id" -> "back-link", "data-module" -> "hmrc-back-link"), classes="js-enabled", href="#", content = HtmlContent(messages("site.back"))
+            attributes = Map("id" -> "back-link", "data-module" -> "hmrc-back-link"), classes="hmrc-!-js-visible", href="#", content = HtmlContent(messages("site.back"))
         ))
     }
 }

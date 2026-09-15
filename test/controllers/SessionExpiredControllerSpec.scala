@@ -42,6 +42,21 @@ class SessionExpiredControllerSpec extends SpecBase {
 
       application.stop()
     }
+
+    "redirect to sign in for a POST" in {
+
+      val application = applicationBuilder(userAnswers = None).build()
+
+      val request = FakeRequest(POST, routes.SessionExpiredController.onSubmit.url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe frontendAppConfig.loginUrl
+
+      application.stop()
+    }
   }
 
 }

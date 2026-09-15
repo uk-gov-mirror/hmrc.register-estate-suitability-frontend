@@ -90,6 +90,26 @@ class IdentifierActionSpec extends SpecBase {
       }
     }
 
+    "a user with no internal id" must {
+      "redirect the user to the unauthorised page" in {
+
+        val application = applicationBuilder(userAnswers = None).build()
+
+        when(mockAuthConnector.authorise(any(), any[Retrieval[RetrievalType]]())(any(), any()))
+          .thenReturn(Future.successful(new ~(None, Some(AffinityGroup.Organisation))))
+
+        val action = new AuthenticatedIdentifierAction(trustsAuth, bodyParsers)
+
+        val controller = new Harness(action)
+        val result     = controller.onPageLoad()(fakeRequest)
+
+        status(result)           mustBe SEE_OTHER
+        redirectLocation(result) mustBe Some(controllers.routes.UnauthorisedController.onPageLoad.url)
+
+        application.stop()
+      }
+    }
+
     "Individual user" must {
       "redirect the user to the unauthorised page" in {
 

@@ -35,9 +35,9 @@
     @formHelper(action = YouNeedToRegisterController.onSubmit(), Symbol("autoComplete") -> "off") {
 
         @heading("youNeedToRegister.heading")
-        <p> @messages("youNeedToRegister.p1")</p>
-        <p> @messages("youNeedToRegister.p2")</p>
-        <p>@messages("youNeedToRegister.p3") <a id="help-link" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate" target="_blank" rel="noopener noreferrer">@messages("youNeedToRegister.contact.link")</a>.</p>
+        <p class="govuk-body">@messages("youNeedToRegister.p1")</p>
+        <p class="govuk-body">@messages("youNeedToRegister.p2")</p>
+        <p class="govuk-body">@messages("youNeedToRegister.p3") <a class="govuk-link" id="help-link" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate" target="_blank" rel="noopener noreferrer">@messages("youNeedToRegister.contact.link")</a>.</p>
 
          @submitButton(Some("site.estate.continue"))
 

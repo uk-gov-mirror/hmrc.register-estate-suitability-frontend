@@ -66,6 +66,49 @@ class CheckYourAnswersControllerSpec extends SpecBase {
       application.stop()
     }
 
+    "return OK and a section per question when the estate is not already registered" in {
+
+      val mockConnector = mock[RegisterEstateConnector]
+
+      when(mockConnector.getUTRFlag()(any(), any(), any())).thenReturn(Future.successful(false))
+
+      val answers = emptyUserAnswers
+        .set(DateOfDeathBeforePage, true)
+        .success
+        .value
+        .set(MoreThanHalfMillPage, false)
+        .success
+        .value
+
+      val application = applicationBuilder(userAnswers = Some(answers))
+        .overrides(inject.bind[RegisterEstateConnector].toInstance(mockConnector))
+        .build()
+
+      val request = FakeRequest(GET, routes.CheckYourAnswersController.onPageLoad.url)
+
+      val result = route(application, request).value
+
+      val view   = application.injector.instanceOf[CheckYourAnswersView]
+      val helper = application.injector.instanceOf[CheckYourAnswersHelper]
+
+      val expectedSections = Seq(
+        helper.pageAnswers(answers, EstateRegisteredOnlineYesNoPage.toString, Some(false)),
+        helper.pageAnswers(answers, DateOfDeathBeforePage.toString),
+        helper.pageAnswers(answers, MoreThanHalfMillPage.toString),
+        helper.pageAnswers(answers, MoreThanQuarterMillPage.toString),
+        helper.pageAnswers(answers, MoreThanTenThousandPage.toString),
+        helper.pageAnswers(answers, MoreThanTwoHalfMillPage.toString)
+      ).flatten
+
+      expectedSections.size mustBe 3
+
+      status(result) mustEqual OK
+
+      contentAsString(result) mustEqual view(expectedSections)(request, messages).toString
+
+      application.stop()
+    }
+
     "redirect to Session Expired for a GET if no existing data is found" in {
 
       val application = applicationBuilder(userAnswers = None).build()
@@ -82,6 +125,29 @@ class CheckYourAnswersControllerSpec extends SpecBase {
     }
 
     "onSubmit" must {
+
+      "redirect to the register an estate service when the estate is already registered" in {
+
+        val answers = emptyUserAnswers
+          .set(EstateRegisteredOnlineYesNoPage, true)
+          .success
+          .value
+          .set(MoreThanHalfMillPage, true)
+          .success
+          .value
+
+        val application = applicationBuilder(userAnswers = Some(answers)).build()
+
+        val request = FakeRequest(POST, routes.CheckYourAnswersController.onSubmit.url)
+
+        val result = route(application, request).value
+
+        status(result) mustEqual SEE_OTHER
+
+        redirectLocation(result).value mustEqual s"${frontendAppConfig.loginContinueUrl}/must-register-estate"
+
+        application.stop()
+      }
 
       "redirect to YouNeedToRegister when any answer is true" in {
 

@@ -66,6 +66,23 @@ class DataRetrievalActionSpec extends SpecBase with ScalaFutures {
         }
       }
     }
+
+    "the session repository fails" must {
+
+      "log and rethrow the failure" in {
+
+        val sessionRepository = Mockito.mock(classOf[SessionRepository])
+        when(sessionRepository.get("id")).thenReturn(Future.failed(new RuntimeException("mongo is down")))
+        val action            = new Harness(sessionRepository)
+
+        val futureResult = action.callTransform(IdentifierRequest(fakeRequest, OrganisationUser("id")))
+
+        whenReady(futureResult.failed) { e =>
+          e            mustBe a[RuntimeException]
+          e.getMessage mustBe "mongo is down"
+        }
+      }
+    }
   }
 
 }

@@ -17,13 +17,11 @@
 @import controllers.routes._
 @import utils.SectionFormatter.formatSections
 @import viewmodels.{AnswerSection, RepeaterAnswerSection, Section}
-@import config.FrontendAppConfig
 @import views.html.components.{Heading, SubmitButton}
 
 @this(
  main_template: MainTemplate,
  formHelper: FormWithCSRF,
- appConfig: FrontendAppConfig,
  heading: Heading,
  govukSummaryList: GovukSummaryList,
  submitButton: SubmitButton

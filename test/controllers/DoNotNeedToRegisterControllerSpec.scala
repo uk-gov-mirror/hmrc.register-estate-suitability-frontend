@@ -46,6 +46,21 @@ class DoNotNeedToRegisterControllerSpec extends SpecBase {
 
       application.stop()
     }
+
+    "redirect to logout for a POST" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(POST, routes.DoNotNeedToRegisterController.onSubmit().url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe routes.LogoutController.logout().url
+
+      application.stop()
+    }
   }
 
 }

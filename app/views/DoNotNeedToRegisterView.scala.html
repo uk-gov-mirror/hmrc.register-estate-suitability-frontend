@@ -34,12 +34,12 @@
 
     @heading("doNotNeedToRegister.heading")
 
-    <p>@messages("doNotNeedToRegister.p1") <a id="information-payment-arrangements-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/self-assessment-tax-returns/returns-for-someone-who-has-died#if-you-do-not-need-to-send-a-tax-return">@messages("doNotNeedToRegister.payment.link")</a>.</p>
-    <p> @messages("doNotNeedToRegister.p2")</p>
+    <p class="govuk-body">@messages("doNotNeedToRegister.p1") <a class="govuk-link" id="information-payment-arrangements-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/self-assessment-tax-returns/returns-for-someone-who-has-died#if-you-do-not-need-to-send-a-tax-return">@messages("doNotNeedToRegister.payment.link")</a>.</p>
+    <p class="govuk-body">@messages("doNotNeedToRegister.p2")</p>
 
     @bulletList("doNotNeedToRegister", Seq("b1", "b2", "b3"))
 
-    <p>@messages("doNotNeedToRegister.p3") <a id="help-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("doNotNeedToRegister.contact.link")</a>.</p>
+    <p class="govuk-body">@messages("doNotNeedToRegister.p3") <a class="govuk-link" id="help-link" target="_blank" rel="noopener noreferrer" href="https://www.gov.uk/government/organisations/hm-revenue-customs/contact/bereavement-and-deceased-estate">@messages("doNotNeedToRegister.contact.link")</a>.</p>
 
     @formHelper(action = DoNotNeedToRegisterController.onSubmit(), Symbol("autoComplete") -> "off") {
         @submitButton(Some(messages("site.sign_out")))

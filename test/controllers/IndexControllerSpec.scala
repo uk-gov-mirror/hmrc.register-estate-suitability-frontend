@@ -71,6 +71,21 @@ class IndexControllerSpec extends SpecBase {
 
       application.stop()
     }
+
+    "redirect to check your answers when an origin is supplied" in {
+
+      val application = applicationBuilder(userAnswers = Some(emptyUserAnswers)).build()
+
+      val request = FakeRequest(GET, routes.IndexController.onPageLoad(Some("suitability")).url)
+
+      val result = route(application, request).value
+
+      status(result) mustEqual SEE_OTHER
+
+      redirectLocation(result).value mustBe routes.CheckYourAnswersController.onPageLoad.url
+
+      application.stop()
+    }
   }
 
 }

@@ -16,7 +16,7 @@
 
 package pages.behaviours
 
-import java.time.LocalDateTime
+import java.time.Instant
 
 import generators.Generators
 import models.UserAnswers
@@ -32,7 +32,7 @@ import play.api.libs.json._
 trait PageBehaviours
     extends AnyWordSpec with Matchers with ScalaCheckPropertyChecks with Generators with OptionValues with TryValues {
 
-  val emptyUserAnswers: UserAnswers = UserAnswers("id", Json.obj(), LocalDateTime.now())
+  val emptyUserAnswers: UserAnswers = UserAnswers("id", Json.obj(), Instant.now())
 
   class BeRetrievable[A] {
 

@@ -80,11 +80,11 @@ class CheckYourAnswersHelper @Inject() (
   private def changeRouteForTaxYear(pageName: String): String =
     pageName match {
       case "haveUtrYesNo"        => s"${config.loginContinueUrl}/have-utr?origin=suitability-check-your-answers"
-      case "dateOfDeathBefore"   => controllers.routes.DateOfDeathBeforeController.onPageLoad.url
-      case "moreThanHalfMill"    => controllers.routes.MoreThanHalfMillController.onPageLoad.url
-      case "moreThanQuarterMill" => controllers.routes.MoreThanQuarterMillController.onPageLoad.url
-      case "moreThanTenThousand" => controllers.routes.MoreThanTenThousandController.onPageLoad.url
-      case "moreThanTwoHalfMill" => controllers.routes.MoreThanTwoHalfMillController.onPageLoad.url
+      case "dateOfDeathBefore"   => controllers.routes.DateOfDeathBeforeController.onPageLoad().url
+      case "moreThanHalfMill"    => controllers.routes.MoreThanHalfMillController.onPageLoad().url
+      case "moreThanQuarterMill" => controllers.routes.MoreThanQuarterMillController.onPageLoad().url
+      case "moreThanTenThousand" => controllers.routes.MoreThanTenThousandController.onPageLoad().url
+      case "moreThanTwoHalfMill" => controllers.routes.MoreThanTwoHalfMillController.onPageLoad().url
     }
 
   private def yesNoPageForRegister(

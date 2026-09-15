@@ -22,7 +22,7 @@ import org.mongodb.scala.model._
 import uk.gov.hmrc.mongo.MongoComponent
 import uk.gov.hmrc.mongo.play.json.PlayMongoRepository
 
-import java.time.LocalDateTime
+import java.time.Instant
 import java.util.concurrent.TimeUnit
 import javax.inject.{Inject, Singleton}
 import scala.concurrent.{ExecutionContext, Future}
@@ -44,7 +44,7 @@ class SessionRepository @Inject() (
             .expireAfter(config.cachettlSessionInSeconds, TimeUnit.SECONDS)
         )
       ),
-      replaceIndexes = config.dropIndexes
+      replaceIndexes = true
     ) {
 
   def get(id: String): Future[Option[UserAnswers]] = {
@@ -57,7 +57,7 @@ class SessionRepository @Inject() (
 
     val selector = Filters.equal("_id", userAnswers.id)
 
-    val newUser = userAnswers.copy(lastUpdated = LocalDateTime.now)
+    val newUser = userAnswers.copy(lastUpdated = Instant.now)
 
     val replaceOptions = new ReplaceOptions().upsert(true)
 
